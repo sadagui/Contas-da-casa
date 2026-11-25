@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Contas da Casa" />
+  <title>Contas da Casa</title>
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icon.svg" />
+
+  <style>
+    :root {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-2: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #facc15;
+      --accent-dark: #eab308;
+      --accent-text: #0f172a;
+      --green: #22c55e;
+      --green-bg: rgba(34, 197, 94, 0.14);
+      --red: #ef4444;
+      --red-bg: rgba(239, 68, 68, 0.14);
+      --blue: #38bdf8;
+      --blue-bg: rgba(56, 189, 248, 0.14);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.14);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      min-height: 100vh;
+      padding-bottom: 92px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+    }
+
+    .header-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: var(--accent-text);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .brand h1 {
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .brand span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .btn-install {
+      background: var(--surface-2);
+      color: var(--accent);
+      border: 1px solid rgba(250, 204, 21, 0.4);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .btn-install:hover {
+      background: rgba(250, 204, 21, 0.12);
+    }
+
+    .desktop-tabs {
+      max-width: 760px;
+      margin: 16px auto 0;
+      padding: 0 16px;
+      display: none;
+      gap: 8px;
+    }
+
+    .desktop-tab {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .desktop-tab.active {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: var(--accent);
+    }
+
+    main {
+      max-width: 760px;
+      margin: 16px auto 0;
+      padding: 0 16px;
+    }
+
+    .tab-panel {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tab-panel.active {
+      display: flex;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .step-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--accent-text);
+      font-weight: 800;
+      font-size: 0.85rem;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .row-form {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-text);
+    }
+
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-success {
+      background: var(--green);
+      color: #052e16;
+    }
+
+    .btn-danger-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn-danger-ghost:hover {
+      color: var(--red);
+      background: var(--red-bg);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 6px 10px 6px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .chip button {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.85rem;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .empty-hint {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(148, 163, 184, 0.08);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    /* Contas */
+    .bill-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bill-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bill-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .bill-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .bill-name {
+      font-weight: 700;
+      font-size: 0.96rem;
+    }
+
+    .tag-fixed {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--blue-bg);
+      color: var(--blue);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .bill-controls {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 8px;
+    }
+
+    .input-money-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-money-wrap span {
+      position: absolute;
+      left: 10px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    .input-money-wrap input {
+      padding-left: 34px;
+    }
+
+    .add-bill-box {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .add-bill-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .add-bill-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .add-bill-grid .full {
+      grid-column: 1 / -1;
+    }
+
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-label input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--accent);
+    }
+
+    /* Resumo Geral */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.74rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .stat-value.highlight {
+      color: var(--accent);
+    }
+
+    .alert-box {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--amber-bg);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fde68a;
+      font-size: 0.85rem;
+    }
+
+    /* Resultado Final */
+    .result-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .result-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .result-info strong {
+      display: block;
+      font-size: 0.98rem;
+    }
+
+    .result-info small {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .result-badge {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+      margin-bottom: 2px;
+    }
+
+    .pill-receive {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .pill-pay {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .pill-settled {
+      background: var(--blue-bg);
+      color: var(--blue);
+    }
+
+    .result-amount {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .amount-receive { color: var(--green); }
+    .amount-pay { color: var(--red); }
+    .amount-settled { color: var(--blue); }
+
+    /* Ações no rodapé da aba Mês Atual */
+    .actions-stack {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Histórico */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .history-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    .history-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .history-title {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .history-date {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .history-totals {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-totals strong {
+      color: var(--text);
+    }
+
+    .history-results {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .history-result-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.86rem;
+    }
+
+    .history-details {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+
+    .history-details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .history-bill-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+    }
+
+    .history-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    /* Barra inferior mobile */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 8px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .nav-btn.active {
+      background: rgba(250, 204, 21, 0.14);
+      color: var(--accent);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-width: 420px;
+      width: 100%;
+      padding: 18px;
+    }
+
+    .modal h3 {
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+    }
+
+    .modal p, .modal li {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .modal ul {
+      padding-left: 18px;
+      margin-bottom: 14px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--accent);
+      color: var(--accent-text);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 60;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (min-width: 680px) {
+      .desktop-tabs { display: flex; }
+      .bottom-nav { display: none; }
+      body { padding-bottom: 32px; }
+      .toast { bottom: 24px; }
+    }
+
+    @media (max-width: 480px) {
+      .summary-grid { grid-template-columns: 1fr; }
+      .actions-stack { grid-template-columns: 1fr; }
+      .bill-controls { grid-template-columns: 1fr; }
+      .add-bill-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">$</div>
+        <div>
+          <h1>Contas da Casa</h1>
+          <span id="currentMonthLabel">Divisão mensal</span>
+        </div>
+      </div>
+      <button id="btnInstall" class="btn-install" type="button">Instalar App</button>
+    </div>
+  </header>
+
+  <div class="desktop-tabs">
+    <button class="desktop-tab active" data-tab="atual" type="button">Mês Atual</button>
+    <button class="desktop-tab" data-tab="historico" type="button">Histórico (<span class="hist-count">0</span>)</button>
+  </div>
+
+  <main>
+    <!-- ABA MÊS ATUAL -->
+    <section id="tab-atual" class="tab-panel active">
+
+      <!-- PASSO 1 -->
+      <div class="card">
+        <div class="step-header">
+          <div class="step-badge">1</div>
+          <h2 class="step-title">Participantes</h2>
+        </div>
+
+        <form id="formParticipant" class="row-form">
+          <input id="inputParticipant" type="text" placeholder="Nome do participante..." autocomplete="off" />
+          <button class="btn btn-primary" type="submit">Adicionar</button>
+        </form>
+
+        <div id="participantsContainer"></div>
+      </div>
+
+      <!-- PASSO 2 -->
+      <div class="card">
+        <div class="step-header">
+          <div class="step-badge">2</div>
+          <h2 class="step-title">Contas do Mês</h2>
+        </div>
+
+        <div id="billsContainer" class="bill-list"></div>
+
+        <form id="formBill" class="add-bill-box">
+          <div class="add-bill-title">Adicionar nova conta</div>
+          <div class="add-bill-grid">
+            <input id="inputBillName" class="full" type="text" placeholder="Nome da conta (ex: Gás, Condomínio...)" autocomplete="off" />
+            <div class="input-money-wrap">
+              <span>R$</span>
+              <input id="inputBillAmount" type="text" inputmode="decimal" placeholder="0,00" />
+            </div>
+            <select id="selectBillPayer"></select>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+            <label class="checkbox-label">
+              <input id="checkBillFixed" type="checkbox" />
+              Manter como conta fixa
+            </label>
+            <button class="btn btn-primary" type="submit">+ Adicionar Conta</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- PASSO 3 -->
+      <div class="card">
+        <div class="step-header">
+          <div class="step-badge">3</div>
+          <h2 class="step-title">Resumo Geral</h2>
+        </div>
+
+        <div class="summary-grid">
+          <div class="stat-box">
+            <div class="stat-label">Total das Contas</div>
+            <div id="statTotal" class="stat-value">R$ 0,00</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Participantes</div>
+            <div id="statCount" class="stat-value">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Valor por Pessoa</div>
+            <div id="statPerPerson" class="stat-value highlight">R$ 0,00</div>
+          </div>
+        </div>
+
+        <div id="summaryAlerts"></div>
+      </div>
+
+      <!-- PASSO 4 -->
+      <div class="card">
+        <div class="step-header">
+          <div class="step-badge">4</div>
+          <h2 class="step-title">Resultado Final (Acerto de Contas)</h2>
+        </div>
+
+        <div id="resultsContainer" class="result-list"></div>
+      </div>
+
+      <!-- AÇÕES -->
+      <div class="actions-stack">
+        <button id="btnCopyWhatsApp" class="btn btn-secondary" type="button">Copiar Resumo (WhatsApp)</button>
+        <button id="btnSaveHistory" class="btn btn-success" type="button">Salvar no Histórico e Novo Mês</button>
+      </div>
+
+    </section>
+
+    <!-- ABA HISTÓRICO -->
+    <section id="tab-historico" class="tab-panel">
+      <div id="historyContainer" class="history-list"></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="atual" type="button">Mês Atual</button>
+    <button class="nav-btn" data-tab="historico" type="button">Histórico (<span class="hist-count">0</span>)</button>
+  </nav>
+
+  <!-- MODAL SALVAR HISTÓRICO -->
+  <div id="modalSave" class="modal-backdrop">
+    <div class="modal">
+      <h3>Salvar no Histórico e Novo Mês</h3>
+      <p>Informe o nome/mês de referência para arquivar este resumo. As contas fixas serão mantidas com valor zerado e os participantes continuam salvos.</p>
+      <input id="inputMonthRef" type="text" placeholder="Ex: Novembro / 2026" />
+      <div class="modal-actions">
+        <button id="btnCancelSave" class="btn btn-secondary" type="button">Cancelar</button>
+        <button id="btnConfirmSave" class="btn btn-success" type="button">Salvar e Zerar Mês</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL INSTALAÇÃO -->
+  <div id="modalInstall" class="modal-backdrop">
+    <div class="modal">
+      <h3>Instalar no Celular</h3>
+      <p>Você pode adicionar o <strong>Contas da Casa</strong> na tela inicial do celular como um aplicativo:</p>
+      <ul>
+        <li><strong>Android (Chrome):</strong> toque nos 3 pontinhos no canto superior direito e escolha <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar aplicativo"</strong>.</li>
+        <li><strong>iPhone (Safari):</strong> toque no botão <strong>Compartilhar</strong> na barra inferior e escolha <strong>"Adicionar à Tela de Início"</strong>.</li>
+      </ul>
+      <div class="modal-actions">
+        <button id="btnCloseInstall" class="btn btn-primary" type="button">Entendi</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'contas_da_casa_v1';
+
+    const DEFAULT_FIXED_BILLS = [
+      { id: 'fix-agua', name: 'Água', amount: 0, paidBy: '', fixed: true },
+      { id: 'fix-luz', name: 'Luz', amount: 0, paidBy: '', fixed: true },
+      { id: 'fix-mercado', name: 'Mercado', amount: 0, paidBy: '', fixed: true },
+      { id: 'fix-internet', name: 'Internet', amount: 0, paidBy: '', fixed: true }
+    ];
+
+    let state = loadState();
+    let deferredPrompt = null;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          return {
+            participants: Array.isArray(parsed.participants) ? parsed.participants : [],
+            bills: Array.isArray(parsed.bills) ? parsed.bills : structuredClone(DEFAULT_FIXED_BILLS),
+            history: Array.isArray(parsed.history) ? parsed.history : []
+          };
+        }
+      } catch (e) {}
+      return {
+        participants: [],
+        bills: structuredClone(DEFAULT_FIXED_BILLS),
+        history: []
+      };
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function parseMoney(val) {
+      if (typeof val === 'number') return isNaN(val) ? 0 : Math.max(0, val);
+      const cleaned = String(val || '')
+        .replace(/[^\d.,]/g, '')
+        .replace(/\.(?=.*\.)/g, '')
+        .replace(',', '.');
+      const num = parseFloat(cleaned);
+      return isNaN(num) ? 0 : Math.max(0, Math.round(num * 100) / 100);
+    }
+
+    function formatBRL(value) {
+      return (Number(value) || 0).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+    }
+
+    function formatInputMoney(value) {
+      if (!value) return '';
+      return Number(value).toFixed(2).replace('.', ',');
+    }
+
+    function getCurrentMonthName() {
+      const now = new Date();
+      const month = now.toLocaleDateString('pt-BR', { month: 'long' });
+      const capitalized = month.charAt(0).toUpperCase() + month.slice(1);
+      return `${capitalized} / ${now.getFullYear()}`;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+
+    function computeMetrics() {
+      const total = state.bills.reduce((acc, b) => acc + (Number(b.amount) || 0), 0);
+      const count = state.participants.length;
+      const perPerson = count > 0 ? total / count : 0;
+
+      const pendingWithValue = state.bills.filter(b => b.amount > 0 && !b.paidBy);
+
+      const results = state.participants.map(name => {
+        const paid = state.bills
+          .filter(b => b.paidBy === name)
+          .reduce((acc, b) => acc + (Number(b.amount) || 0), 0);
+        const balance = Math.round((paid - perPerson) * 100) / 100;
+        let status = 'QUITADO';
+        if (balance > 0.009) status = 'A RECEBER';
+        else if (balance < -0.009) status = 'A PAGAR';
+        return { name, paid, perPerson, balance, status };
+      });
+
+      return { total, count, perPerson, pendingWithValue, results };
+    }
+
+    function renderAll() {
+      document.getElementById('currentMonthLabel').textContent = getCurrentMonthName();
+      renderParticipants();
+      renderBillPayerSelect();
+      renderBills();
+      renderSummaryAndResults();
+      renderHistory();
+      document.querySelectorAll('.hist-count').forEach(el => {
+        el.textContent = state.history.length;
+      });
+    }
+
+    function renderParticipants() {
+      const container = document.getElementById('participantsContainer');
+      if (state.participants.length === 0) {
+        container.innerHTML = `
+          <div class="empty-hint">
+            Nenhum participante cadastrado ainda. Adicione os nomes acima — eles ficam salvos fixos automaticamente para as próximas divisões.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="chips">
+          ${state.participants.map((name, idx) => `
+            <span class="chip">
+              ${escapeHtml(name)}
+              <button type="button" title="Remover" onclick="removeParticipant(${idx})">&times;</button>
+            </span>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function buildPayerOptions(selectedValue) {
+      const opts = [`<option value="">Pendente (ninguém pagou)</option>`];
+      state.participants.forEach(name => {
+        const sel = selectedValue === name ? 'selected' : '';
+        opts.push(`<option value="${escapeHtml(name)}" ${sel}>Pago por: ${escapeHtml(name)}</option>`);
+      });
+      return opts.join('');
+    }
+
+    function renderBillPayerSelect() {
+      const sel = document.getElementById('selectBillPayer');
+      const current = sel.value;
+      sel.innerHTML = buildPayerOptions(state.participants.includes(current) ? current : '');
+    }
+
+    function renderBills() {
+      const container = document.getElementById('billsContainer');
+      if (state.bills.length === 0) {
+        container.innerHTML = `<div class="empty-hint">Nenhuma conta cadastrada neste mês.</div>`;
+        return;
+      }
+
+      container.innerHTML = state.bills.map(bill => `
+        <div class="bill-item">
+          <div class="bill-top">
+            <div class="bill-name-wrap">
+              <span class="bill-name">${escapeHtml(bill.name)}</span>
+              ${bill.fixed ? '<span class="tag-fixed">Fixa</span>' : ''}
+            </div>
+            <button class="btn-danger-ghost" type="button" title="Excluir conta" onclick="removeBill('${bill.id}')">Excluir</button>
+          </div>
+          <div class="bill-controls">
+            <div class="input-money-wrap">
+              <span>R$</span>
+              <input
+                type="text"
+                inputmode="decimal"
+                placeholder="0,00"
+                value="${formatInputMoney(bill.amount)}"
+                onchange="updateBillAmount('${bill.id}', this.value)"
+              />
+            </div>
+            <select onchange="updateBillPayer('${bill.id}', this.value)">
+              ${buildPayerOptions(bill.paidBy)}
+            </select>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderSummaryAndResults() {
+      const { total, count, perPerson, pendingWithValue, results } = computeMetrics();
+
+      document.getElementById('statTotal').textContent = formatBRL(total);
+      document.getElementById('statCount').textContent = count;
+      document.getElementById('statPerPerson').textContent = formatBRL(perPerson);
+
+      const alerts = [];
+      if (count === 0) {
+        alerts.push('Adicione pelo menos 1 participante no passo 1 para calcular a divisão.');
+      }
+      if (pendingWithValue.length > 0) {
+        const names = pendingWithValue.map(b => b.name).join(', ');
+        alerts.push(`Contas com valor lançado ainda marcadas como Pendente: ${escapeHtml(names)}.`);
+      }
+
+      document.getElementById('summaryAlerts').innerHTML = alerts
+        .map(msg => `<div class="alert-box">${msg}</div>`)
+        .join('');
+
+      const resContainer = document.getElementById('resultsContainer');
+      if (count === 0) {
+        resContainer.innerHTML = `<div class="empty-hint">Cadastre os participantes para ver quanto cada um precisa pagar ou receber.</div>`;
+        return;
+      }
+
+      resContainer.innerHTML = results.map(r => {
+        let pillClass = 'pill-settled';
+        let amountClass = 'amount-settled';
+        if (r.status === 'A RECEBER') {
+          pillClass = 'pill-receive';
+          amountClass = 'amount-receive';
+        } else if (r.status === 'A PAGAR') {
+          pillClass = 'pill-pay';
+          amountClass = 'amount-pay';
+        }
+        return `
+          <div class="result-card">
+            <div class="result-info">
+              <strong>${escapeHtml(r.name)}</strong>
+              <small>Pagou ${formatBRL(r.paid)} &bull; Cota ${formatBRL(r.perPerson)}</small>
+            </div>
+            <div class="result-badge">
+              <span class="pill ${pillClass}">${r.status}</span>
+              <span class="result-amount ${amountClass}">${formatBRL(Math.abs(r.balance))}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderHistory() {
+      const container = document.getElementById('historyContainer');
+      if (state.history.length === 0) {
+        container.innerHTML = `
+          <div class="card">
+            <div class="empty-hint" style="margin-top:0;">
+              Nenhum mês salvo no histórico ainda. Ao finalizar um mês na aba <strong>Mês Atual</strong>, toque em <strong>Salvar no Histórico e Novo Mês</strong>.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = state.history.map(item => `
+        <div class="history-card">
+          <div class="history-head">
+            <div>
+              <div class="history-title">${escapeHtml(item.label)}</div>
+              <div class="history-date">Salvo em ${escapeHtml(item.savedAt)}</div>
+            </div>
+            <button class="btn-danger-ghost" type="button" onclick="removeHistory('${item.id}')">Excluir</button>
+          </div>
+
+          <div class="history-totals">
+            <span>Total: <strong>${formatBRL(item.total)}</strong></span>
+            <span>Participantes: <strong>${item.participants.length}</strong></span>
+            <span>Por pessoa: <strong>${formatBRL(item.perPerson)}</strong></span>
+          </div>
+
+          <div class="history-results">
+            ${item.results.map(r => {
+              const cls = r.status === 'A RECEBER' ? 'amount-receive' : (r.status === 'A PAGAR' ? 'amount-pay' : 'amount-settled');
+              return `
+                <div class="history-result-row">
+                  <span><strong>${escapeHtml(r.name)}</strong> (pagou ${formatBRL(r.paid)})</span>
+                  <span class="${cls}" style="font-weight:700;">${r.status} ${formatBRL(Math.abs(r.balance))}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <details class="history-details">
+            <summary>Ver contas lançadas (${item.bills.length})</summary>
+            ${item.bills.map(b => `
+              <div class="history-bill-row">
+                <span>${escapeHtml(b.name)} (${b.paidBy ? escapeHtml(b.paidBy) : 'Pendente'})</span>
+                <strong>${formatBRL(b.amount)}</strong>
+              </div>
+            `).join('')}
+          </details>
+
+          <div class="history-actions">
+            <button class="btn btn-secondary" style="width:100%;" type="button" onclick="copyHistoryWhatsApp('${item.id}')">
+              Copiar Resumo (WhatsApp)
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Ações de Participantes
+    document.getElementById('formParticipant').addEventListener('submit', e => {
+      e.preventDefault();
+      const input = document.getElementById('inputParticipant');
+      const name = input.value.trim();
+      if (!name) return;
+      if (state.participants.some(p => p.toLowerCase() === name.toLowerCase())) {
+        showToast('Esse participante já existe');
+        return;
+      }
+      state.participants.push(name);
+      input.value = '';
+      saveState();
+      renderAll();
+    });
+
+    window.removeParticipant = function(idx) {
+      const removed = state.participants[idx];
+      state.participants.splice(idx, 1);
+      state.bills.forEach(b => {
+        if (b.paidBy === removed) b.paidBy = '';
+      });
+      saveState();
+      renderAll();
+    };
+
+    // Ações de Contas
+    document.getElementById('formBill').addEventListener('submit', e => {
+      e.preventDefault();
+      const nameInput = document.getElementById('inputBillName');
+      const amountInput = document.getElementById('inputBillAmount');
+      const payerSelect = document.getElementById('selectBillPayer');
+      const fixedCheck = document.getElementById('checkBillFixed');
+
+      const name = nameInput.value.trim();
+      if (!name) {
+        showToast('Informe o nome da conta');
+        return;
+      }
+
+      state.bills.push({
+        id: 'bill-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+        name,
+        amount: parseMoney(amountInput.value),
+        paidBy: payerSelect.value,
+        fixed: fixedCheck.checked
+      });
+
+      nameInput.value = '';
+      amountInput.value = '';
+      payerSelect.value = '';
+      fixedCheck.checked = false;
+
+      saveState();
+      renderAll();
+      showToast('Conta adicionada');
+    });
+
+    window.updateBillAmount = function(id, rawVal) {
+      const bill = state.bills.find(b => b.id === id);
+      if (!bill) return;
+      bill.amount = parseMoney(rawVal);
+      saveState();
+      renderBills();
+      renderSummaryAndResults();
+    };
+
+    window.updateBillPayer = function(id, payer) {
+      const bill = state.bills.find(b => b.id === id);
+      if (!bill) return;
+      bill.paidBy = payer;
+      saveState();
+      renderSummaryAndResults();
+    };
+
+    window.removeBill = function(id) {
+      state.bills = state.bills.filter(b => b.id !== id);
+      saveState();
+      renderAll();
+    };
+
+    // Formatação WhatsApp
+    function buildWhatsAppText({ label, bills, total, perPerson, results }) {
+      const lines = [];
+      lines.push(`*CONTAS DA CASA — ${label}*`);
+      lines.push('');
+      lines.push('*Contas do Mês:*');
+      bills.forEach(b => {
+        if (b.amount > 0) {
+          const who = b.paidBy ? `Pago por ${b.paidBy}` : 'Pendente';
+          lines.push(`• ${b.name}: ${formatBRL(b.amount)} (${who})`);
+        }
+      });
+      lines.push('');
+      lines.push(`*Total:* ${formatBRL(total)}`);
+      lines.push(`*Valor por pessoa:* ${formatBRL(perPerson)}`);
+      if (results.length > 0) {
+        lines.push('');
+        lines.push('*Resultado Final:*');
+        results.forEach(r => {
+          lines.push(`• ${r.name}: pagou ${formatBRL(r.paid)} → *${r.status} ${formatBRL(Math.abs(r.balance))}*`);
+        });
+      }
+      return lines.join('\n');
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('Resumo copiado!');
+      } catch (e) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('Resumo copiado!');
+      }
+    }
+
+    document.getElementById('btnCopyWhatsApp').addEventListener('click', () => {
+      const metrics = computeMetrics();
+      const text = buildWhatsAppText({
+        label: getCurrentMonthName(),
+        bills: state.bills,
+        total: metrics.total,
+        perPerson: metrics.perPerson,
+        results: metrics.results
+      });
+      copyText(text);
+    });
+
+    window.copyHistoryWhatsApp = function(id) {
+      const item = state.history.find(h => h.id === id);
+      if (!item) return;
+      copyText(buildWhatsAppText(item));
+    };
+
+    // Salvar no Histórico e Novo Mês
+    const modalSave = document.getElementById('modalSave');
+    const inputMonthRef = document.getElementById('inputMonthRef');
+
+    document.getElementById('btnSaveHistory').addEventListener('click', () => {
+      inputMonthRef.value = getCurrentMonthName();
+      modalSave.classList.add('open');
+      setTimeout(() => inputMonthRef.focus(), 50);
+    });
+
+    document.getElementById('btnCancelSave').addEventListener('click', () => {
+      modalSave.classList.remove('open');
+    });
+
+    document.getElementById('btnConfirmSave').addEventListener('click', () => {
+      const label = inputMonthRef.value.trim() || getCurrentMonthName();
+      const metrics = computeMetrics();
+
+      const entry = {
+        id: 'hist-' + Date.now(),
+        label,
+        savedAt: new Date().toLocaleDateString('pt-BR'),
+        participants: [...state.participants],
+        bills: state.bills.filter(b => b.amount > 0).map(b => ({ ...b })),
+        total: metrics.total,
+        perPerson: metrics.perPerson,
+        results: metrics.results
+      };
+
+      state.history.unshift(entry);
+
+      // Mantém contas fixas zeradas e remove contas avulsas
+      state.bills = state.bills
+        .filter(b => b.fixed)
+        .map(b => ({ ...b, amount: 0, paidBy: '' }));
+
+      saveState();
+      renderAll();
+      modalSave.classList.remove('open');
+      showToast('Salvo no histórico! Novo mês iniciado.');
+    });
+
+    window.removeHistory = function(id) {
+      state.history = state.history.filter(h => h.id !== id);
+      saveState();
+      renderAll();
+      showToast('Registro removido');
+    };
+
+    // Navegação por abas
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-panel').forEach(p => {
+        p.classList.toggle('active', p.id === 'tab-' + tabName);
+      });
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
+      });
+    }
+
+    document.querySelectorAll('[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // PWA: Service Worker e Instalação
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    const modalInstall = document.getElementById('modalInstall');
+    document.getElementById('btnInstall').addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      } else {
+        modalInstall.classList.add('open');
+      }
+    });
+
+    document.getElementById('btnCloseInstall').addEventListener('click', () => {
+      modalInstall.classList.remove('open');
+    });
+
+    [modalSave, modalInstall].forEach(modal => {
+      modal.addEventListener('click', e => {
+        if (e.target === modal) modal.classList.remove('open');
+      });
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
